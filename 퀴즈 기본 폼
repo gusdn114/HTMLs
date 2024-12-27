@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 페이지</title>
+    <link rel="stylesheet" href="lol-quiz-style.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <header class="quiz-header">
+            <h1>퀴즈 타이틀</h1>
+            <div class="quiz-info">
+                <span class="score">점수: 0</span>
+                <span class="timer">시간: 10:00</span>
+            </div>
+        </header>
+
+        <section class="quiz-body">
+            
+            <div class="question-image">
+                <img src="https://static.inven.co.kr/column/2021/04/01/news/i14951228296.png" alt="퀴즈 이미지">
+            </div>
+
+            
+            <div class="question">
+                <p class="question-text">문제 1: 다음 아이템 중 현재 사라진 아이템을 고르시오.</p>
+            </div>
+
+            
+            <div class="choices">
+                <button class="choice" onclick="location.href='lol-quiz-wanswer.html'">그림자 검</button>
+                <button class="choice" onclick="location.href='lol-quiz-ranswer.html'">핏빛 칼날</button>
+                <button class="choice" onclick="location.href='lol-quiz-wanswer.html'">루난의 허리케인</button>
+                <button class="choice" onclick="location.href='lol-quiz-wanswer.html'">밤의 끝자락</button>
+            </div>
+
+            
+        </section>
+
+        <footer class="quiz-footer">
+            <p>퀴즈 종료 후 결과가 나옵니다.</p>
+        </footer>
+    </div>
+</body>
+</html>

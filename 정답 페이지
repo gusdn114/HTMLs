@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정답!</title>
+    <link rel="stylesheet" href="lol-quiz-wanswer-style.css">
+</head>
+<body>
+    <div class="correct-answer-container">
+        <h1 class="correct-answer-text">정답!</h1>
+        <div class="congratulations-message">
+            <p>정확한 답을 선택하셨습니다! 🎉</p>
+        </div>
+        <button class="next-button" onclick="window.location.href='next-question.html'">다음 문제</button>

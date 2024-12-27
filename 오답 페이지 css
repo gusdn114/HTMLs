@@ -1,0 +1,85 @@
+/* 기본 리셋 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.wrong-answer-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    padding: 30px;
+    position: relative;
+}
+
+.wrong-answer-text {
+    font-size: 80px;
+    font-weight: bold;
+    color: #e74c3c; /* 빨간색: 경고, 오답을 강조 */
+    text-transform: uppercase;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-10px);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+    75% {
+        transform: translateX(-10px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.try-again-message p {
+    font-size: 24px;
+    color: #333;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.retry-button, .next-button {
+    background-color: #e74c3c; /* 빨간색 버튼 */
+    color: white;
+    font-size: 18px;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.retry-button:hover, .next-button:hover {
+    background-color: #c0392b; /* 버튼 hover 효과 */
+}
+
+.next-button {
+    background-color: #3498db; /* 파란색: 다음 문제로 가는 버튼 */
+    margin-top: 10px;
+}
+
+.next-button:hover {
+    background-color: #2980b9;
+}

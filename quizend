@@ -41,11 +41,13 @@
 
     <script>
         const score = localStorage.getItem('score') || 0;
+        const totalscore = localStorage.getItem('totalscore') || 0;
         document.querySelector('.score').textContent = `최종 점수: ${score}`;
 
         function restartQuiz() {
             localStorage.removeItem('score');
-            window.location.href = 'lol-quiz.html?question=1';
+            localStorage.removeItem('totalscore');
+            window.location.href = 'main.html?question=1';
         }
     </script>
 

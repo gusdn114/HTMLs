@@ -6,7 +6,9 @@
     <title>정답/오답 확인</title>
     <link rel="stylesheet" href="lol-quiz-answer-style.css">
     <script>
+
         let score = parseInt(new URLSearchParams(window.location.search).get('score')) || 0;
+        let totalscore = parseInt(new URLSearchParams(window.location.search).get('totalscore')) || 0;
         const urlParams = new URLSearchParams(window.location.search);
         const currentQuestion = parseInt(urlParams.get('question'));
         const selectedAnswer = urlParams.get('selected');
@@ -45,15 +47,18 @@
 
             let resultMessage = '';
             if (selectedAnswer === questionData.correctAnswer) {
+                totalscore +=10;
                 score += 10;  // 정답이면 점수 추가
                 resultMessage = `<h2>정답입니다!</h2>`;
             } else if (selectedAnswer === '') {
+                totalscore +=10;
                 resultMessage = `<h2>시간 초과!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
             } else {
+                totalscore +=10;
                 resultMessage = `<h2>오답입니다!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
             }
 
-            resultElement.innerHTML = resultMessage + `<p>현재 점수: ${score}</p>`; // 점수 표시
+            resultElement.innerHTML = resultMessage + `<p>현재 점수: ${score}/${totalscore}</p>`; // 점수 표시
 
             timerElement.textContent = `남은 시간: ${timeLeft}초`; // 남은 시간 표시
 
@@ -69,6 +74,7 @@
             }
 
             localStorage.setItem('score', score);  // 점수 저장
+            localStorage.setItem('totalscore',totalscore);
         }
 
         window.onload = showResult;

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 페이지</title>
+    <link rel="stylesheet" href="la-quiz-style.css">
+    <script>
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        let timeLeft = 30;  // 제한 시간 30초
+        let currentQuestion = parseInt(new URLSearchParams(window.location.search).get('question') || '1');
+        
+        const questions = [
+            {
+                question: "문제 1: 다음 중 이성계와 신진사대부들이 힘을 합쳐 건국한 조선의 건국 연도는?", // 문제
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fimgnews.naver.net%2Fimage%2F5723%2F2019%2F04%2F08%2F0000000184_004_20190408105417701.jpg&type=sc960_832", // 이미지
+                choices: ["1392", "1393", "1394", "1395"], // 선택지
+                correctAnswer: "1392" //정답
+            },
+            {
+                question: "문제 2: 다음 중 삼국시대 백제 전성기를 이끌었고, 평양성 전투에서 고국원왕을 격파한 백제의 왕은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA5MDFfMjg0%2FMDAxNzI1MTU2NDc2NDE5.LvBrTyX039maXV9FWOKg2n0HuEyb-g5VTt1ZOYyIUsMg.ZX2tVkjXvJusxBqa-SKiuqGEhYKa3nQZ4zINYcHa0H0g.PNG%2F%25B9%25E9%25C1%25A6%25C0%25C7_%25C3%25B5%25B5%25B5.png&type=sc960_832",
+                choices: ["소수림왕", "의자왕", "근초고왕", "계왕"],
+                correctAnswer: "근초고왕"
+            },
+            {
+                question: "문제 3: 다음 중 1895년 최대 규모의 항일 투쟁으로 일제에 맞서 싸웠던 의병투쟁은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxOTExMDNfMTg3%2FMDAxNTcyNzE1NzAzODgy.DZWhWp7uZXZc6bLUFcgLRjx6bcr7yrkZx2Ydwny-abgg.r2JKJB_xBNGOgS3oOvth30xJVc7mr4Bl4Zv61nGos6Mg.PNG%2F20191103_003953.png&type=sc960_832",
+                choices: ["을미 사변", "을미 의병", "3.1운동", "병인 박해"],
+                correctAnswer: "을미 의병"
+            },
+            {
+                question: "문제 4: 다음 중 신라와 백제의 마지막 싸움이라고 할 수 있으며, 계백과 김유신의 대결이라고 할 수 있는 전투는?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20150605_86%2Fchoieh0_1433480810131vorWF_JPEG%2Fz2_cp020814460002.jpg&type=sc960_832",
+                choices: ["안시성 전투", "봉오동 전투", "황산벌 전투", "청산리 전투"],
+                correctAnswer: "황산벌 전투"
+            },
+            {
+                question: "문제 5: 다음 중 고구려의 남진 정책을 펼쳤던 왕은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzEwMDlfMTgg%2FMDAxNjk2ODUwMTExOTkx.IjLa39D-iJ25ztWrDeFBv6PJBsmfvNpkKiVHEYhQ424g.VS-N9wnB_ZzPtwc26wvqPDPjpjHCxg5SJ0rnYKdduBog.PNG.kshfe0210%2Fimage.png&type=sc960_832",
+                choices: ["을지문덕", "장수왕", "광개토대왕", "소수림왕"],
+                correctAnswer: "장수왕"
+            },
+            {
+                question: "문제 6: 다음 중 신라시대 동아시아의 해상권을 장악했던 인물로, 청해진을 세워 적을 소탕한 인물은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDAzMzBfMTYx%2FMDAxNzExNzY5ODA0MjY5.PwovANxWh6vXGp8fLez9jS_lIJqrWG0aJXe1wmS7rCMg.pe5QzfaSB7hxvXRV56RLk851TLOaFH0_gy_tte7M2Iog.PNG%2F-%25BA%25B9%25BB%25E7%25BA%25BB.png&type=sc960_832",
+                choices: ["김정희", "대조영", "장보고", "문익점"],
+                correctAnswer: "장보고"
+            },
+            {
+                question: "문제 7: 다음 중 조선 후기의 전성기를 이끌었던 왕이며, 탕평책과 애민 정책, 진척사업을 시행한 왕은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDAyMDZfNTUg%2FMDAxNzA3MTY1NDc2NzU5.CSZ7Z9qlmTHT6tW-6-ClfyiStYoYHXDBjS5r-FRXhPYg.aMUiCfp5aJZeM4Z4g_ohY4IX0IDcqMinM7kYTyVM2sQg.JPEG.lhyang22%2F20240201_115927.jpg&type=sc960_832",
+                choices: ["정조", "영조", "광종", "세조"],
+                correctAnswer: "영조"
+            },
+            {
+                question: "문제 8: 다음 중 조선의 설계자라고 하며, 조선경국전, 경제 문감, 고려국사 등을 편찬한 위인은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fimgnews.naver.net%2Fimage%2F003%2F2017%2F01%2F06%2FNISI20170106_0012558290_web_20170106164901422.jpg&type=sc960_832",
+                choices: ["정도전", "임도전", "강조전", "도적"],
+                correctAnswer: "정도전"
+            },
+            {
+                question: "문제 9: 다음 중 을사조약이 무효임을 세계적으로 알리기 위해 파견된 사절단의 이름은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzA5MzBfMTY5%2FMDAxNjk2MDczMDQyMDcy.-WLvbt6Gg9GFlEoEo30Sx6aYLaGPqTRhUJWI9ZunD5Mg.5E-TAekqsRbgH5mMmM6cmnCHiiW52uM0dsdu3TEn85cg.JPEG.csh3768%2FIMG_0513.jpg&type=sc960_832",
+                choices: ["에이즈 특사", "헤이그 특사", "헤이즈 특사", "헤이스특사"],
+                correctAnswer: "헤이그 특사"
+            },
+            {
+                question: "문제 10: 다음 중 고구려의 제천 행사는?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fimgnews.naver.net%2Fimage%2F030%2F2017%2F12%2F06%2F0002664460_001_20171206151045494.jpg&type=sc960_832",
+                choices: ["동맹", "동건", "영고", "무천"],
+                correctAnswer: "동맹"
+            },
+            // 얘들아 추가 문제는 여기에다가 해주면 되는데
+            // 코드 좀 어렵고 조금만 건드려도 오류 뜰 수 있거든 조심 좀 해주고
+            // 실제로도 오류가 좀 많이 떠서.. 차근차근 보완해야될 것 같고
+            // 위에 코드랑 똑같은 형식으로 문제 추가 해주면 돼 이미지는 꼭꼭 반드시 인터넷에서 이미지 주소 복사해서 붙여넣기 해주고
+            // 이 주석은 지우고 문제 10개 채워주면 돼 화이팅~
+        ];
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestion - 1];
+            document.querySelector('.question-text').textContent = questionData.question;
+
+            const imageContainer = document.querySelector('.question-image');
+            const imgElement = document.createElement('img');
+            imgElement.src = questionData.image;
+            imgElement.alt = '문제 이미지';
+            imageContainer.innerHTML = '';
+            imageContainer.appendChild(imgElement);
+
+            const choicesContainer = document.querySelector('.choices');
+            choicesContainer.innerHTML = '';
+            questionData.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.classList.add('choice');
+                button.textContent = choice;
+                button.onclick = () => {
+                    window.location.href = `la-quiz-result.html?question=${currentQuestion}&selected=${choice}&score=${score}&time=${timeLeft}`;
+                };
+                choicesContainer.appendChild(button);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            const timerElement = document.querySelector('.timer');
+            const interval = setInterval(function() {
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    alert("시간 초과! 오답 처리");
+                    window.location.href = `la-quiz-result.html?question=${currentQuestion}&selected=&score=${score}&time=${timeLeft}`;  // 시간 초과 시 오답 처리
+                } else {
+                    timerElement.textContent = `시간: ${timeLeft}초`;
+                    timeLeft--;
+                }
+            }, 1000);
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</head>
+<body>
+    <div class="quiz-container">
+        <header class="quiz-header">
+            <h1>퀴즈</h1>
+        </header>
+        <section class="quiz-body">
+            <div class="question-image"></div>
+            <p class="question-text"></p>
+            <div class="choices"></div>
+            <p class="timer">시간: 30초</p>  
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정답/오답 확인</title>
+    <link rel="stylesheet" href="lol-quiz-answer-style.css">
+    <script>
+        let score = parseInt(new URLSearchParams(window.location.search).get('score')) || 0;
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentQuestion = parseInt(urlParams.get('question'));
+        const selectedAnswer = urlParams.get('selected');
+        const timeLeft = parseInt(urlParams.get('time')); // 남은 시간
+
+        const questions = [
+            {
+                question: "문제 1: 다음 아이템 중 현재 사라진 아이템을 고르시오.", // 문제
+                image: "https://static.inven.co.kr/column/2021/04/01/news/i14951228296.png", //이미지
+                choices: ["그림자 검", "핏빛 칼날", "루난의 허리케인", "밤의 끝자락"], // 선택지
+                correctAnswer: "핏빛 칼날" // 정답
+            },
+            {
+                question: "문제 2: '소환사의 협곡'에 있는 정글 몬스터는?",
+                image: "https://i.namu.wiki/i/_8hzwDC-UubHdIwdiFhQZKzSoZ_8Z9nD8907EDc-OIofqP9BPBYkwrEoZKlTY93XKxvCkGVEVoeB9WBbArq00lcx8Lv1wUXggDzhqSsyhabmIxzDlPFQZome9WSD6WFqbhLkQApht1QTBncaAs5iGg.webp",
+                choices: ["드래곤", "가렌", "미니언", "넥서스"],
+                correctAnswer: "드래곤"
+            },
+            {
+                question: "문제 3: '소환사의 협곡'에 있는 정글 몬스터 중 공허 몬스터가 아닌 것은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fpost.phinf.naver.net%2FMjAyMTEwMDRfNTcg%2FMDAxNjMzMzAzNTQwOTg3.r6HZOfmQSUtERqWLAJCxZ6d-gP-FNSG1ioHB-0jCFfAg.TVZDqNlcMEyBzqU0bYwpEkPfjPuilxACKzGr1K3l5dwg.JPEG%2FIGsUJAtpOqmWBKb20THxe38sGURU.jpg&type=sc960_832",
+                choices: ["공허 유충", "협곡의 전령", "공허 드래곤", "내셔 남작"],
+                correctAnswer: "공허 드래곤"
+            }
+            // 얘들아 추가 문제는 여기에다가 해주면 되는데
+            // 코드 좀 어렵고 조금만 건드려도 오류 뜰 수 있거든 조심 좀 해주고
+            // 실제로도 오류가 좀 많이 떠서.. 차근차근 보완해야될 것 같고
+            // 위에 코드랑 똑같은 형식으로 문제 추가 해주면 돼 이미지는 꼭꼭 반드시 인터넷에서 이미지 주소 복사해서 붙여넣기 해주고
+            // 이 주석은 지우고 문제 10개 채워주면 돼 화이팅~
+        ];
+
+        function showResult() {
+            const questionData = questions[currentQuestion - 1];
+            const resultElement = document.querySelector('.result');
+            const timerElement = document.querySelector('.timer');
+
+            let resultMessage = '';
+            if (selectedAnswer === questionData.correctAnswer) {
+                score += 10;  // 정답이면 점수 추가
+                resultMessage = `<h2>정답입니다!</h2>`;
+            } else if (selectedAnswer === '') {
+                resultMessage = `<h2>시간 초과!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
+            } else {
+                resultMessage = `<h2>오답입니다!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
+            }
+
+            resultElement.innerHTML = resultMessage + `<p>현재 점수: ${score}</p>`; // 점수 표시
+
+            timerElement.textContent = `남은 시간: ${timeLeft}초`; // 남은 시간 표시
+
+            const nextQuestion = currentQuestion + 1;
+            if (nextQuestion <= questions.length) {
+                document.querySelector('.next-button').style.display = 'block';
+                document.querySelector('.next-button').onclick = () => {
+                    window.location.href = `lol-quiz.html?question=${nextQuestion}`;
+                };
+            } else {
+                document.querySelector('.next-button').style.display = 'none';
+                document.querySelector('.finish-button').style.display = 'block';
+            }
+
+            localStorage.setItem('score', score);  // 점수 저장
+        }
+
+        window.onload = showResult;
+
+        // 뒤로 가기 버튼 막기 (페이지 이동 편법 방지)
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.pushState(null, null, location.href);
+        };
+    </script>
+</head>
+<body>
+    <div class="quiz-container">
+        <header class="quiz-header">
+            <h1>정답/오답 확인</h1>
+        </header>
+        <section class="quiz-body">
+            <div class="result"></div>
+            <p class="timer">남은 시간: 0초</p> <!-- 남은 시간 표시 -->
+            <button class="next-button" style="display:none;">다음 문제</button>
+            <button class="finish-button" style="display:none;" onclick="window.location.href='quiz-end.html'">퀴즈 종료</button>
+        </section>
+    </div>
+</body>
+</html>

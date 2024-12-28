@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정답/오답 확인</title>
+    <link rel="stylesheet" href="la-quiz2-answer-style.css">
+    <script>
+        let score = parseInt(new URLSearchParams(window.location.search).get('score')) || 0;
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentQuestion = parseInt(urlParams.get('question'));
+        const selectedAnswer = urlParams.get('selected');
+        const timeLeft = parseInt(urlParams.get('time')); // 남은 시간
+
+        const questions = [
+            {
+                question: "문제 1: 다음 중 프랑스 대혁명이 시작된 연도는 언제인가?", // 문제
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxOTA5MjJfMjQy%2FMDAxNTY5MTE4NjMxODU0.W44Y5k6NMknnwvm0AygpCqAWIk45GJbXSYzOJOG03NMg.RbsjtsMI9ex0ECT4R9zpjZn5voKs4vHF1w-32-BKVwYg.JPEG.stg8166%2FLiberty-Leading-the-People.jpg&type=sc960_832", // 이미지
+                choices: ["1788", "1789", "1790", "1791"], // 선택지
+                correctAnswer: "1789" //정답
+            },
+            {
+                question: "문제 2: 다음 중 원자폭탄이 처음으로 사용된 전쟁은 무엇인가?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMDEwMDZfMTAz%2FMDAxNjAxOTg0MjgxMjI1.IDgJqlflufsH4g8U3EJp2-RcTH59YKhBiVClE5jYR30g.xVdfO7TBTcLHxxACeVXoZypMQ6G8s-qenuw4UikFAlwg.JPEG.dongi0508%2F%25B8%25DE%25C0%25CE.jpg&type=sc960_832",
+                choices: ["제2차 세계대전", "제 1차 세계대전", "히로시마 전투", "미국 전투"],
+                correctAnswer: "제2차 세계대전"
+            },
+            {
+                question: "문제 3: 다음 중 세계 최초의 민주 공화국으로 알려진 국가는 어디인가?",
+                image: "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fres.klook.com%2Fimage%2Fupload%2Fc_fill%2Cw_1265%2Ch_712%2Fq_80%2Fw_80%2Cx_15%2Cy_15%2Cg_south_west%2Cl_Klook_water_br_trans_yhcmh3%2Factivities%2Fkm5avlu7gbg4ytzdpayq.jpg&type=sc960_832",
+                choices: ["이란", "미국", "이집트", "그리스"],
+                correctAnswer: "그리스"
+            },
+            {
+                question: "문제 4: 다음 중 원나라를 멸망시키고 명을 건국한 인물은 누구인가?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODExMjVfNiAg%2FMDAxNTQzMTQ1NjEyMDg4.ldf0IOp-L0NEgAaL28GZFwbQQGsYBVmmCikTyLGgJSsg.zvTca8tdSisXO88HZsNjQ-Ym14Q4xuECaNlQ1mY1pE0g.JPEG.wannaeight%2F%25C1%25D6%25BF%25F8%25C0%25E5.jpg&type=sc960_832",
+                choices: ["주원이", "주원장", "칭기스칸", "허동건"],
+                correctAnswer: "주원장"
+            },
+            {
+                question: "문제 5: 다음 중 1차 세계대전의 원인이 된 사건은 무엇인가?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxNzAzMTNfMjQ4%2FMDAxNDg5NDA3NDg2MjYz.YtuZVQqEtaVUfxxIUIzxC7xYkidk_5ppLfU0A62UBUYg.Pu89HMUMxGjljiFCRvqbVGZ_fYjJUM7i1PfsYKNb-u0g.JPEG.contenter93%2F49a39ba4b25dd9S.jpg&type=sc960_832",
+                choices: ["사라예보 암살사건", "케네디 암살사건", "히틀러", "총"],
+                correctAnswer: "사라예보 암살사건"
+            },
+            {
+                question: "문제 6: 다음 중 19세기 후반 독일을 통일시킨 인물은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDAyMThfMTE1%2FMDAxNzA4MjMyMjA2MDU0.F-oUT1VbJwYAyIhZBA4V-hAhhn7bhcgkUHfV-VFUWw4g.v6zabhc7N4lWtRhES8iZemWrSiPomJfV0MVKlPxlTOQg.JPEG.pkschina505%2Fv2-90b2f74a53af136e649e4507192904ea_720w.jpg&type=sc960_832",
+                choices: ["비스마르크", "비스킷", "마르코", "비스마리크"],
+                correctAnswer: "비스마르크"
+            },
+            {
+                question: "문제 7: 다음 중 노예제를 철폐한 미국의 대통령은 누구인가?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDEwMTNfNTAg%2FMDAxNzI4ODEzMDcxNjcw.3nGMHnYJSV20Lmaj9Un21XAiMIOlzvlb7esV-z9Ql6Ag.pMB5VePYPH_gYD4R6RR09fiDPoMqWKC3MT-Kpg3dHs8g.JPEG%2FIMG_1138.jpg&type=sc960_832",
+                choices: ["간디", "링컨", "킹콩", "링크"],
+                correctAnswer: "링컨"
+            },
+            {
+                question: "문제 8: 다음 중 '짐은 이제 죽는다. 그러나 국가는 영원하리라'라는 말로 유명한 프랑스 왕은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20160622_212%2Fhoxhq7_14665339658147SIzw_JPEG%2FFCFD3CA9B16B918E4FA68D658D19A5E6.jpg&type=sc960_832",
+                choices: ["루이3세", "루이14세", "루이16세", "루이15세"],
+                correctAnswer: "루이14세"
+            },
+            {
+                question: "문제 9: 다음 중 빅토리아 여왕이 즉위한 연도는?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20130719_17%2F2ginza_1374236670545U2hlX_JPEG%2F%25BA%25F2%25C5%25E4%25B8%25AE%25BE%25C6_%25BF%25A9%25BF%25D52.jpg&type=sc960_832",
+                choices: ["1978년", "1873년", "1784년", "1860년"],
+                correctAnswer: "1873년"
+            },
+            {
+                question: "문제 10: 다음 중 19세기 말, 아프리카 대륙의 대부분을 나눠 가진 회담은 무엇인가?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODA3MjVfMjgy%2FMDAxNTMyNDk2NjQ4MTQ4.xCajCEl7XAREJcEuT4zKZNe9JREOdloa8m2PBUmnN2Ig.s1Z92s1VyxvT-sMKlTPwrWKKDOQG2Vi9fBc5HA7VUIwg.PNG.hubafrica%2F%25BD%25BA%25C5%25A9%25B8%25B0%25BC%25A6_2018-07-18_%25BF%25C0%25C8%25C4_3.55.29.png&type=sc960_832",
+                choices: ["베를린 회담", "비정상 회담", "모스크바 회담", "카이로 회담"],
+                correctAnswer: "베를린 회담"
+            },
+
+            // 얘들아 추가 문제는 여기에다가 해주면 되는데
+            // 코드 좀 어렵고 조금만 건드려도 오류 뜰 수 있거든 조심 좀 해주고
+            // 실제로도 오류가 좀 많이 떠서.. 차근차근 보완해야될 것 같고
+            // 위에 코드랑 똑같은 형식으로 문제 추가 해주면 돼 이미지는 꼭꼭 반드시 인터넷에서 이미지 주소 복사해서 붙여넣기 해주고
+            // 이 주석은 지우고 문제 10개 채워주면 돼 화이팅~
+        ];
+
+        function showResult() {
+            const questionData = questions[currentQuestion - 1];
+            const resultElement = document.querySelector('.result');
+            const timerElement = document.querySelector('.timer');
+
+            let resultMessage = '';
+            if (selectedAnswer === questionData.correctAnswer) {
+                score += 10;  // 정답이면 점수 추가
+                resultMessage = `<h2>정답입니다!</h2>`;
+            } else if (selectedAnswer === '') {
+                resultMessage = `<h2>시간 초과!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
+            } else {
+                resultMessage = `<h2>오답입니다!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
+            }
+
+            resultElement.innerHTML = resultMessage + `<p>현재 점수: ${score}</p>`; // 점수 표시
+
+            timerElement.textContent = `남은 시간: ${timeLeft}초`; // 남은 시간 표시
+
+            const nextQuestion = currentQuestion + 1;
+            if (nextQuestion <= questions.length) {
+                document.querySelector('.next-button').style.display = 'block';
+                document.querySelector('.next-button').onclick = () => {
+                    window.location.href = `la-quiz2.html?question=${nextQuestion}`;
+                };
+            } else {
+                document.querySelector('.next-button').style.display = 'none';
+                document.querySelector('.finish-button').style.display = 'block';
+            }
+
+            localStorage.setItem('score', score);  // 점수 저장
+        }
+
+        window.onload = showResult;
+
+        // 뒤로 가기 버튼 막기 (페이지 이동 편법 방지)
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.pushState(null, null, location.href);
+        };
+    </script>
+</head>
+<body>
+    <div class="quiz-container">
+        <header class="quiz-header">
+            <h1>정답/오답 확인</h1>
+        </header>
+        <section class="quiz-body">
+            <div class="result"></div>
+            <p class="timer">남은 시간: 0초</p> <!-- 남은 시간 표시 -->
+            <button class="next-button" style="display:none;">다음 문제</button>
+            <button class="finish-button" style="display:none;" onclick="window.location.href='quiz-end.html'">퀴즈 종료</button>
+        </section>
+    </div>
+</body>
+</html>

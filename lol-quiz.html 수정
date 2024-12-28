@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 페이지</title>
+    <link rel="stylesheet" href="lol-quiz-style.css">
+    <script>
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        let totalscore = parseInt(localStorage.getItem('totalscore')) || 0;
+        let timeLeft = 30;  // 제한 시간 30초
+        let currentQuestion = parseInt(new URLSearchParams(window.location.search).get('question') || '1');
+        
+        const questions = [
+            {
+                question: "문제 1: 다음 아이템 중 현재 사라진 아이템을 고르시오.", // 문제
+                image: "https://static.inven.co.kr/column/2021/04/01/news/i14951228296.png", // 이미지
+                choices: ["그림자 검", "핏빛 칼날", "루난의 허리케인", "밤의 끝자락"], // 선택지
+                correctAnswer: "핏빛 칼날" //정답
+            },
+            {
+                question: "문제 2: '소환사의 협곡'에 있는 정글 몬스터는?",
+                image: "https://i.namu.wiki/i/_8hzwDC-UubHdIwdiFhQZKzSoZ_8Z9nD8907EDc-OIofqP9BPBYkwrEoZKlTY93XKxvCkGVEVoeB9WBbArq00lcx8Lv1wUXggDzhqSsyhabmIxzDlPFQZome9WSD6WFqbhLkQApht1QTBncaAs5iGg.webp",
+                choices: ["드래곤", "가렌", "미니언", "넥서스"],
+                correctAnswer: "드래곤"
+            },
+            {
+                question: "문제 3: '소환사의 협곡'에 있는 정글 몬스터 중 공허 몬스터가 아닌 것은?",
+                image: "https://search.pstatic.net/common/?src=http%3A%2F%2Fpost.phinf.naver.net%2FMjAyMTEwMDRfNTcg%2FMDAxNjMzMzAzNTQwOTg3.r6HZOfmQSUtERqWLAJCxZ6d-gP-FNSG1ioHB-0jCFfAg.TVZDqNlcMEyBzqU0bYwpEkPfjPuilxACKzGr1K3l5dwg.JPEG%2FIGsUJAtpOqmWBKb20THxe38sGURU.jpg&type=sc960_832",
+                choices: ["공허 유충", "협곡의 전령", "공허 드래곤", "내셔 남작"],
+                correctAnswer: "공허 드래곤"
+            }
+            // 얘들아 추가 문제는 여기에다가 해주면 되는데
+            // 코드 좀 어렵고 조금만 건드려도 오류 뜰 수 있거든 조심 좀 해주고
+            // 실제로도 오류가 좀 많이 떠서.. 차근차근 보완해야될 것 같고
+            // 위에 코드랑 똑같은 형식으로 문제 추가 해주면 돼 이미지는 꼭꼭 반드시 인터넷에서 이미지 주소 복사해서 붙여넣기 해주고
+            // 이 주석은 지우고 문제 10개 채워주면 돼 화이팅~
+        ];
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestion - 1];
+            document.querySelector('.question-text').textContent = questionData.question;
+
+            const imageContainer = document.querySelector('.question-image');
+            const imgElement = document.createElement('img');
+            imgElement.src = questionData.image;
+            imgElement.alt = '문제 이미지';
+            imageContainer.innerHTML = '';
+            imageContainer.appendChild(imgElement);
+
+            const choicesContainer = document.querySelector('.choices');
+            choicesContainer.innerHTML = '';
+            questionData.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.classList.add('choice');
+                button.textContent = choice;
+                button.onclick = () => {
+                    window.location.href = `lol-quiz-result.html?question=${currentQuestion}&selected=${choice}&score=${score}&time=${timeLeft}&totalscore=${totalscore}}`;
+                };
+                choicesContainer.appendChild(button);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            const timerElement = document.querySelector('.timer');
+            const interval = setInterval(function() {
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    alert("시간 초과! 오답 처리");
+                    window.location.href = `lol-quiz-result.html?question=${currentQuestion}&selected=&score=${score}&time=${timeLeft}&totalscore=${totalscore}`;
+                    totalscore += 10;  // 시간 초과 시 오답 처리
+                } else {
+                    timerElement.textContent = `시간: ${timeLeft}초`;
+                    timeLeft--;
+                }
+            }, 1000);
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</head>
+<body>
+    <div class="quiz-container">
+        <header class="quiz-header">
+            <h1>퀴즈</h1>
+        </header>
+        <section class="quiz-body">
+            <div class="question-image"></div>
+            <p class="question-text"></p>
+            <div class="choices"></div>
+            <p class="timer">시간: 30초</p>  
+        </section>
+    </div>
+</body>
+</html>

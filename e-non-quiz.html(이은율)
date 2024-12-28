@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>퀴즈 페이지</title>
-    <link rel="stylesheet" href="e-non-quiz-style.css">
+    <link rel="stylesheet" href="lol-quiz-style.css">
     <script>
         let score = parseInt(localStorage.getItem('score')) || 0;
         let timeLeft = 30;  // 제한 시간 30초

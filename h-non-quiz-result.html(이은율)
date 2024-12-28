@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정답/오답 확인</title>
+    <link rel="stylesheet" href="lol-quiz-answer-style.css">
+    <script>
+        let score = parseInt(new URLSearchParams(window.location.search).get('score')) || 0;
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentQuestion = parseInt(urlParams.get('question'));
+        const selectedAnswer = urlParams.get('selected');
+        const timeLeft = parseInt(urlParams.get('time')); // 남은 시간
+
+        const questions = [
+        {
+                question: "문제 1: 다음 중 지구와 가장 가까운 행성을 고르세요", // 문제
+                image:"https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA1MjhfMjc0%2FMDAxNzE2ODcwNjU4ODA4.Sq_bjwBFTtPkpSZKSuWA9wM3U9LxA7zG-BJ5Xxa-NNog.v6tmA_vEowhFqXpsFYN1A45JJ3UVoEFE9wiF1AdY95gg.PNG%2Fimage.png&type=sc960_832",
+                choices: ["수성", "금성", "달", "화성"], // 선택지
+                correctAnswer: "수성" //정답
+            },
+            {
+                question: "문제 2: 다음 중 DNA의 구조를 설명하는 모델을 고르세요",
+                image:"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fmedia.licdn.com%2Fdms%2Fimage%2Fv2%2FD5612AQFBxmPby4IobQ%2Farticle-cover_image-shrink_720_1280%2Farticle-cover_image-shrink_720_1280%2F0%2F1682047748886%3Fe%3D2147483647%26v%3Dbeta%26t%3Dx3tzDvc4GOq3eP61oWloEceSFXSrgpd9yId3dG4E1yQ&type=sc960_832",
+                choices: ["단선구조","삼중나선구조","이중나선구조","나선형구조"],
+                correctAnswer: "이중나선구조"
+            },
+            {
+                question: "문제 3: 다음 중 빛의 속도는 대략 몇 m/s인지 고르세요",
+                image:"https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzExMjhfNTQg%2FMDAxNzAxMTUwNDcyNzU3.5W1HlJV02SKbWSCwijuLGuOIY7j2QsoOb_iqWNEGv6Eg._sw8oScHBoAqdWewqhxTLWT54qvIVG9Y-qxUhcIa0FMg.JPEG.parabora1%2FSKYH_4947e1-1.jpg&type=sc960_832",
+                choices: ["3,000,000 m/s", "30,000,000 m/s", "300,000,000 m/s", "3,000,000,000 m/s"],
+                correctAnswer: "300,000,000 m/s"
+            },
+            {
+                question: "문제 4: 빛의 속도를 처음으로 측정한 과학자는 누구인가요?",
+                image:"https://search.pstatic.net/common/?src=http%3A%2F%2Fimgnews.naver.net%2Fimage%2F003%2F2006%2F12%2F29%2FNISI20061229_0003562229_web.jpg&type=sc960_832",
+                choices: ["아이작 뉴턴", "알버트 아인슈타인", "갈릴레오 갈릴레이", "올레 뢰머"],
+                correctAnswer: "올레 뢰머"
+            },
+            {
+                question: "문제 5: 다음 중 광섬유는 빛의 속도를 어떻게 활용하는지를 고르세요",
+                image:"https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxNzAyMjdfMjY1%2FMDAxNDg4MTc2MTc1MTU5.UctMyrEGt0U5hRRHlSjB9SUvnzB8h8OJY0A9Y7rTZZkg.aYKJKQZBPTurw-Sx-9U20ckdIXzWeDeF2C-5l0YXjTcg.JPEG.yusave%2F%25B1%25A4%25BC%25B6%25C0%25AF.jpg&type=sc960_832",
+                choices: ["정보 전송", "신호 증폭", "정보 저장", "빛의 반사"],
+                correctAnswer: "정보 전송"
+            },
+            {
+                question: "문제 6: 다음 중 가장 먼저 눈에 들어오는 색상을 고르세요",
+                image:"https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA4MTBfMTM5%2FMDAxNzIzMjg3NTk4MDIx.l6TCtvz2hQ77DsvQoTFxBwlM6I9XOkDshs3Hi0LxugYg.mJAlMaSmSrHH0RattAKSR_XuPsGNRAAqTufLoQ2d7jwg.PNG%2F%25B9%25AB%25C1%25A6139%25A3%25DF20240810195926.png&type=sc960_832",
+                choices: ["빨간색", "노란색", "파란색", "보라색"],
+                correctAnswer: "노란색"
+            },
+            {
+                question: "문제 7: 다음 중 인체에서 다른 뼈에 붙어 있지 않은 유일한 뼈는 무엇인지 고르세요",
+                image:"https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA1MTdfMjQy%2FMDAxNzE1OTA5NDEzOTE5.5chUKtAmmgaU9ZvPSHkD2Ko9-ZQRvdCN_Ghb7IwTSlYg._27tvRVlVLEIP-j6Ir5jTPDEr4l6DbNaHlg6spDaA7Ag.JPEG%2FCK_pc0040638742.jpg&type=sc960_832",
+                choices: ["비골", "경골", "대퇴골", "설골"],
+                correctAnswer: "설골"
+            },
+            {
+                question: "문제 8: 다음 중 섭씨와 화씨가 같은 온도를 고르세요",
+                image:"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fplay-lh.googleusercontent.com%2FaQT0HZREGr9LYukzsTbf4zHdDUrY-hr6SfeTJwhEcRPAI-lv_evuUahqapalIG7q57w&type=sc960_832",
+                choices: ["-20", "-30", "-40", "-50"],
+                correctAnswer: "-40"
+            },
+            {
+                question: "문제 9: 다음 중 뇌에서 기억력과 언어능력을 다루는 곳을 고르세요",
+                image:"https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20150217_19%2Fdhgkssla_1424174405797TdFPs_JPEG%2F2015-02-17-19-59-17_deco.jpg&type=sc960_832",
+                choices: ["측두엽", "후두엽", "전두엽", "두정엽"],
+                correctAnswer: "측두엽"
+            },
+            {
+                question: "문제 10: 다음 중 빛의 굴절 현상을 가장 잘 설명하는 법칙을 고르세요",
+                image:"https://search.pstatic.net/common/?src=https%3A%2F%2Fdbscthumb-phinf.pstatic.net%2F1779_000_1%2F20211227185206426_T6ZR9ZLZI.png%2Fbh5_264_i3.png%3Ftype%3Dm4500_4500_fst_n&type=sc960_832",
+                choices: ["프리드만 법칙", "파울리 배타 원리", "스넬의 법칙", "칼노의 법칙"],
+                correctAnswer: "스넬의 법칙"
+            }
+        ];
+
+        function showResult() {
+            const questionData = questions[currentQuestion - 1];
+            const resultElement = document.querySelector('.result');
+            const timerElement = document.querySelector('.timer');
+
+            let resultMessage = '';
+            if (selectedAnswer === questionData.correctAnswer) {
+                score += 10;  // 정답이면 점수 추가
+                resultMessage = `<h2>정답입니다!</h2>`;
+            } else if (selectedAnswer === '') {
+                resultMessage = `<h2>시간 초과!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
+            } else {
+                resultMessage = `<h2>오답입니다!</h2><p>정답은: ${questionData.correctAnswer}</p>`;
+            }
+
+            resultElement.innerHTML = resultMessage + `<p>현재 점수: ${score}</p>`; // 점수 표시
+
+            timerElement.textContent = `남은 시간: ${timeLeft}초`; // 남은 시간 표시
+
+            const nextQuestion = currentQuestion + 1;
+            if (nextQuestion <= questions.length) {
+                document.querySelector('.next-button').style.display = 'block';
+                document.querySelector('.next-button').onclick = () => {
+                    window.location.href = `h-non-quiz.html?question=${nextQuestion}`;
+                };
+            } else {
+                document.querySelector('.next-button').style.display = 'none';
+                document.querySelector('.finish-button').style.display = 'block';
+            }
+
+            localStorage.setItem('score', score);  // 점수 저장
+        }
+
+        window.onload = showResult;
+
+        // 뒤로 가기 버튼 막기 (페이지 이동 편법 방지)
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.pushState(null, null, location.href);
+        };
+    </script>
+</head>
+<body>
+    <div class="quiz-container">
+        <header class="quiz-header">
+            <h1>정답/오답 확인</h1>
+        </header>
+        <section class="quiz-body">
+            <div class="result"></div>
+            <p class="timer">남은 시간: 0초</p> <!-- 남은 시간 표시 -->
+            <button class="next-button" style="display:none;">다음 문제</button>
+            <button class="finish-button" style="display:none;" onclick="window.location.href='quiz-end.html'">퀴즈 종료</button>
+        </section>
+    </div>
+</body>
+</html>

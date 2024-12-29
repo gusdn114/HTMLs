@@ -34,18 +34,28 @@
 </head>
 <body>
 
-    <h1>퀴즈 결과</h1>
+    <h1 class="gift"></h1>
     <p class="score"></p>
 
     <button class="btn" onclick="restartQuiz()">다시 시작</button>
 
     <script>
         const score = localStorage.getItem('score') || 0;
+        const totalscore = localStorage.getItem('totalscore') || 0;
         document.querySelector('.score').textContent = `최종 점수: ${score}`;
 
         function restartQuiz() {
             localStorage.removeItem('score');
-            window.location.href = 'lol-quiz.html?question=1';
+            localStorage.removeItem('totalscore');
+            window.location.href = 'main.html?question=1';
+        }
+        const gift = document.querySelector(".gift")
+        if(score>=30){
+            document.querySelector('.gift').textContent = "축하합니다";
+
+        }
+        else{
+            document.querySelector('.gift').textContent = "실패";
         }
     </script>
 
